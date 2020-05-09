@@ -1,0 +1,17 @@
+2020-05-09 17:27:10.967  INFO 14323 --- [main] cc.xzwb.bookstore.BookstoreApplication   : Starting BookstoreApplication on xzwb with PID 14323 (/home/xzwb/XiYou-BookStore/target/classes started by xzwb in /home/xzwb/XiYou-BookStore)
+2020-05-09 17:27:10.970  INFO 14323 --- [main] cc.xzwb.bookstore.BookstoreApplication   : No active profile set, falling back to default profiles: default
+2020-05-09 17:27:11.464  INFO 14323 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2020-05-09 17:27:11.465  INFO 14323 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2020-05-09 17:27:11.473  INFO 14323 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 4ms. Found 0 JDBC repository interfaces.
+2020-05-09 17:27:11.482  INFO 14323 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2020-05-09 17:27:11.482  INFO 14323 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2020-05-09 17:27:11.488  INFO 14323 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 0ms. Found 0 Redis repository interfaces.
+2020-05-09 17:27:11.547  WARN 14323 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[cc.xzwb.bookstore]' package. Please check your configuration.
+2020-05-09 17:27:11.785  INFO 14323 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2020-05-09 17:27:11.791  INFO 14323 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-05-09 17:27:11.791  INFO 14323 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.34]
+2020-05-09 17:27:11.831  INFO 14323 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-05-09 17:27:11.831  INFO 14323 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 832 ms
+2020-05-09 17:27:11.956  INFO 14323 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-09 17:27:12.308  INFO 14323 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2020-05-09 17:27:12.311  INFO 14323 --- [main] cc.xzwb.bookstore.BookstoreApplication   : Started BookstoreApplication in 1.61 seconds (JVM running for 2.074)
