@@ -1,9 +1,9 @@
 package cc.xzwb.bookstore.zfjw.model;
 
 public class LoginStatus {
-
-
+    // 登录信息
     private final boolean success;
+
     private final String errorMsg;
 
     private static final String DEFAULT_MSG = "login failed";

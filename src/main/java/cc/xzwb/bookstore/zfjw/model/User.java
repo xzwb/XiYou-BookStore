@@ -3,6 +3,11 @@ package cc.xzwb.bookstore.zfjw.model;
 import lombok.NonNull;
 
 public class User {
+    // 学号
+    private String stuCode;
+    // 密码
+    private String password;
+
     public String getStuCode() {
         return stuCode;
     }
@@ -19,18 +24,6 @@ public class User {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    private String stuCode;
-    private String password;
-
-    private String name;
 
     public User(String stuCode, String password) {
         this.stuCode = stuCode;

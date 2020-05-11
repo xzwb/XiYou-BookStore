@@ -20,11 +20,13 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -37,10 +39,19 @@ public class LoginServiceImpl implements LoginService {
     private UrlManager urlManager = UrlManagerImpl.getInstance();
     private KeyManager keyManager = KeyManagerImpl.getInstance();
 
-    // store cookies
     private CookieStore cookieStore = new BasicCookieStore();
-    // set auto redirect
+
+    @Autowired
+    PoolingHttpClientConnectionManager clientConnectionManager;
+
+//    private CloseableHttpClient httpClient = HttpClients.custom()
+//            .disableRedirectHandling()
+//            .setDefaultCookieStore(cookieStore)
+//            .build();
+
+    // 使用连接池获取HttpClient
     private CloseableHttpClient httpClient = HttpClients.custom()
+            .setConnectionManager(clientConnectionManager)
             .disableRedirectHandling()
             .setDefaultCookieStore(cookieStore)
             .build();
@@ -55,16 +66,8 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public LoginStatus login() throws PublicKeyException, LoginException {
-        try {
             LoginData.CovertData covertData = sendIndex();
             return sendLogin(covertData);
-        } finally {
-            try {
-                httpClient.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
@@ -123,12 +126,12 @@ public class LoginServiceImpl implements LoginService {
             throw new LoginException("invalid login url", e);
         }
 
-        httpPost.setEntity(new UrlEncodedFormEntity(covertData.getRequestEntity(), Consts.UTF_8));
+            httpPost.setEntity(new UrlEncodedFormEntity(covertData.getRequestEntity(), Consts.UTF_8));
 
-        try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
-            return getLoginStatus(response);
-        } catch (IOException e) {
-            e.printStackTrace();
+            try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+                return getLoginStatus(response);
+            } catch (IOException e) {
+                e.printStackTrace();
             return LoginStatus.error("服务异常");
         }
     }

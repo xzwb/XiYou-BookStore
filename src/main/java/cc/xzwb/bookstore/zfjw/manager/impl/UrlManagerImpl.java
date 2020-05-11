@@ -13,11 +13,15 @@ public class UrlManagerImpl implements UrlManager {
     private static final String indexUrl = "/jwglxt/xtgl/login_slogin.html";
     private static final String loginUrl = "/jwglxt/xtgl/login_slogin.html";
 
+    private static UrlManager instance;
+
     private UrlManagerImpl() {
     }
 
-    private static UrlManager instance;
-
+    /**
+     * 单例模式 双重验证
+     * @return
+     */
     public static UrlManager getInstance() {
         if (instance == null) {
             synchronized (UrlManagerImpl.class) {
@@ -46,6 +50,7 @@ public class UrlManagerImpl implements UrlManager {
         return afterDecorate(getUrl(baseUrl, loginUrl), true);
     }
 
+    // url拼接
     private String getUrl(String baseUrl, String link) {
         return defaultProtocol + "://" +
                 (!baseUrl.endsWith("/") ? baseUrl : baseUrl.substring(0, baseUrl.length() - 1))
