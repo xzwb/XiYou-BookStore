@@ -6,13 +6,19 @@ import cc.xzwb.bookstore.service.RegisterService;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class RegisterServiceImpl implements RegisterService {
+
+    @Autowired
+    RedisTemplate<String, String> redisTemplate;
 
     private final int AppID = 1400341372;
 
@@ -22,6 +28,13 @@ public class RegisterServiceImpl implements RegisterService {
 
     private final String SmsSign = "大小胖几的日常";
 
+    /**
+     * 发送短信验证码
+     * @param phoneNumber 用户手机号
+     * @return
+     * @throws HTTPException
+     * @throws IOException
+     */
     @Override
     public Result getSMSCode(String phoneNumber) throws HTTPException, IOException {
         String smsCode = "";
@@ -37,7 +50,9 @@ public class RegisterServiceImpl implements RegisterService {
         if (result.result == 0) {
             /**
              * 如果短信发送成功把得到的短信验证码存到redis中
+             * 并设置6分钟过期
              */
+            redisTemplate.opsForValue().set(phoneNumber, smsCode, 3600, TimeUnit.SECONDS);
             return Result.build(ResultStatusEnum.SUCCESS);
         } else {
             return Result.build(ResultStatusEnum.SMS_CODE_FALSE);

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -32,14 +33,19 @@ public class GlobalExceptionHandler {
             String errorMsg = fieldError.getDefaultMessage();
             return Result.build(ResultStatusEnum.BIND_EXCEPTION(errorMsg));
         } else if (e instanceof BindException) {
-          BindException ex = (BindException) e;
-          List<ObjectError> errors = ex.getAllErrors();
-          ObjectError error = errors.get(0);
-          String errorMsg = error.getDefaultMessage();
-          return Result.build(ResultStatusEnum.BIND_EXCEPTION(errorMsg));
+            BindException ex = (BindException) e;
+            List<ObjectError> errors = ex.getAllErrors();
+            ObjectError error = errors.get(0);
+            String errorMsg = error.getDefaultMessage();
+            return Result.build(ResultStatusEnum.BIND_EXCEPTION(errorMsg));
+          /* 针对短信验证码的时候,传入的电话号码为空 */
         } else if (e instanceof HttpMessageNotReadableException) {
             return Result.build(ResultStatusEnum.NULL_EXCEPTION);
+          /* 保存文件的时候无法保存 */
+        } else if (e instanceof IOException) {
+            return Result.build(ResultStatusEnum.IO_EXCEPTION);
         }
+        e.printStackTrace();
         return Result.build(ResultStatusEnum.EXCEPTION);
     }
 }

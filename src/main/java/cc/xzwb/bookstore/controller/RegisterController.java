@@ -7,9 +7,11 @@ import com.github.qcloudsms.httpclient.HTTPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Map;
 
 /**
@@ -34,7 +36,15 @@ public class RegisterController {
     public Result register(@Valid Person person,
                            @RequestPart("file") Part part,
                            @RequestParam String smsCode,
-                           @RequestParam String studentPassword) {
+                           @RequestParam String studentPassword,
+                           HttpSession session) throws IOException {
+        long timeInMillis = Calendar.getInstance().getTimeInMillis();
+        String src = session.getServletContext().getRealPath("/");
+        String  playSrcFile = timeInMillis + part.getSubmittedFileName();
+        if (!"".equals(part.getSubmittedFileName())) {
+            person.setHeadSrc(playSrcFile);
+            part.write(src + playSrcFile);
+        }
         return null;
     }
 
@@ -42,4 +52,15 @@ public class RegisterController {
     public Result getSMSCode(@RequestBody Map<String, String> phoneNumber) throws HTTPException, IOException {
         return registerService.getSMSCode(phoneNumber.get("phoneNumber"));
     }
+
+    /**
+     * 测试文件上传
+     */
+//    @PostMapping("/test")
+//    public String file(@RequestPart("file") Part part,
+//                       HttpSession session) throws IOException {
+//        String src = session.getServletContext().getRealPath("/");
+//        part.write(src+"1");
+//        return "hello";
+//    }
 }

@@ -22,6 +22,11 @@ public enum ResultStatusEnum {
     NULL_EXCEPTION(500, "手机号不能为空"),
 
     /**
+     * 保存图片文件时错误
+     */
+    IO_EXCEPTION(500, "保存图片文件错误"),
+
+    /**
      * 请求错误
      */
     BIND_EXCEPTION(400);
