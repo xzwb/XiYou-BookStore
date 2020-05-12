@@ -1,8 +1,11 @@
 package cc.xzwb.bookstore.pojo;
 
+import lombok.Data;
+
 /**
  * 返回给前端的结果封装
  */
+@Data
 public class Result {
     // 状态码
     private int status;
@@ -12,41 +15,28 @@ public class Result {
     private Object data;
 
     /***** 构造方法 *****/
-    public Result() {
+    private Result() {
     }
 
-    public Result(int status, String message) {
+    private Result(int status, String message) {
         this.status = status;
         this.message = message;
     }
 
-    public Result(Object data) {
-        this(200, "成功");
-        this.data = data;
-    }
-
-    /******* get and set方法 ********/
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
+    private Result(int status, String message, Object data) {
         this.status = status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
         this.message = message;
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
         this.data = data;
+    }
+
+    /** 使用build方法创建Result对象 **/
+    public static Result build(ResultStatusEnum statusEnum) {
+        return new Result(statusEnum.getStatus(), statusEnum.getMessage());
+    }
+
+    public static Result build(ResultStatusEnum statusEnum,  Object data) {
+        Result result = Result.build(statusEnum);
+        result.data = data;
+        return result;
     }
 }
