@@ -3,6 +3,7 @@ package cc.xzwb.bookstore.exception;
 import cc.xzwb.bookstore.pojo.Result;
 import cc.xzwb.bookstore.pojo.ResultStatusEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -46,6 +47,8 @@ public class GlobalExceptionHandler {
           /* 保存文件的时候无法保存 */
         } else if (e instanceof IOException) {
             return Result.build(ResultStatusEnum.IO_EXCEPTION);
+        } else if (e instanceof DuplicateKeyException) {
+            return Result.build(ResultStatusEnum.CODE_HAVE);
         }
         e.printStackTrace();
         return Result.build(ResultStatusEnum.EXCEPTION);

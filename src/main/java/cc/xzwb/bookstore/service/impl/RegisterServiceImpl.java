@@ -5,6 +5,7 @@ import cc.xzwb.bookstore.pojo.Person;
 import cc.xzwb.bookstore.pojo.Result;
 import cc.xzwb.bookstore.pojo.ResultStatusEnum;
 import cc.xzwb.bookstore.service.RegisterService;
+import cc.xzwb.bookstore.thread.SaveFileThread;
 import cc.xzwb.bookstore.zfjw.exception.PublicKeyException;
 import cc.xzwb.bookstore.zfjw.model.LoginStatus;
 import cc.xzwb.bookstore.zfjw.model.User;
@@ -18,6 +19,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.LoginException;
+import javax.servlet.http.Part;
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -75,16 +77,22 @@ public class RegisterServiceImpl implements RegisterService {
      * @param person 需要保存到数据库中的用户信息
      * @param smsCode 短信验证码
      * @param studentPassword 学生教务系统密码
+     * @param src 图片路径
+     * @param part Part
+     * @param haveSrc 是否含有图片
      * @return
      * @throws LoginException
      * @throws PublicKeyException
      * @throws cc.xzwb.bookstore.zfjw.exception.LoginException
      */
     @Override
-    public Result register(Person person, String smsCode, String studentPassword) throws LoginException, PublicKeyException, cc.xzwb.bookstore.zfjw.exception.LoginException {
+    public Result register(Person person, String smsCode, String studentPassword, String src, Part part, boolean haveSrc) throws LoginException, PublicKeyException, cc.xzwb.bookstore.zfjw.exception.LoginException {
         if (smsCodeService(person.getPhoneNumber(), smsCode)) {
             if (ZFJWService(person.getStudentCode(), studentPassword)) {
                 registerMapper.insertPerson(person);
+                if (haveSrc) {
+                    new SaveFileThread(part, src).run();
+                }
                 return Result.build(ResultStatusEnum.SUCCESS);
             } else {
                 return Result.build(ResultStatusEnum.ZFJW_FALSE);

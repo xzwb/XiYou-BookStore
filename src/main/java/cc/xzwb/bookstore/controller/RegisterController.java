@@ -39,15 +39,18 @@ public class RegisterController {
                            @RequestParam String smsCode,
                            @RequestParam String studentPassword,
                            HttpSession session) throws Exception {
+        boolean haveSrc = false;
         long timeInMillis = Calendar.getInstance().getTimeInMillis();
         String src = session.getServletContext().getRealPath("/");
         String  playSrcFile = timeInMillis + part.getSubmittedFileName();
         // 判断是否上传图片
         if (part.getSubmittedFileName() != null && !"".equals(part.getSubmittedFileName())) {
             person.setHeadSrc(playSrcFile);
-            part.write(src + playSrcFile);
+//            part.write(src + playSrcFile);
+            src += playSrcFile;
+            haveSrc = true;
         }
-        return registerService.register(person, smsCode, studentPassword);
+        return registerService.register(person, smsCode, studentPassword, src, part, haveSrc);
     }
 
     @PostMapping("/a/smsCode")

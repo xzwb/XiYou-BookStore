@@ -37,6 +37,11 @@ public enum ResultStatusEnum {
     SMS_CODE_MISTAKE(-4, "短信验证码错误"),
 
     /**
+     * 学号已经被注册
+     */
+    CODE_HAVE(-5, "该学号已经被注册"),
+
+    /**
      * 请求错误
      */
     BIND_EXCEPTION(400);
