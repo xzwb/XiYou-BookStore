@@ -90,6 +90,7 @@ public class RegisterServiceImpl implements RegisterService {
         if (smsCodeService(person.getPhoneNumber(), smsCode)) {
             if (ZFJWService(person.getStudentCode(), studentPassword)) {
                 registerMapper.insertPerson(person);
+                // 使用异步保存头像文件
                 if (haveSrc) {
                     new SaveFileThread(part, src).run();
                 }

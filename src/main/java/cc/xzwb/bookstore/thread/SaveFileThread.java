@@ -3,6 +3,9 @@ package cc.xzwb.bookstore.thread;
 import javax.servlet.http.Part;
 import java.io.IOException;
 
+/**
+ * 保存文件的线程
+ */
 public class SaveFileThread extends Thread {
     private Part part;
 

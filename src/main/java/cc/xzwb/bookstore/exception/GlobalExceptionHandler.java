@@ -47,6 +47,7 @@ public class GlobalExceptionHandler {
           /* 保存文件的时候无法保存 */
         } else if (e instanceof IOException) {
             return Result.build(ResultStatusEnum.IO_EXCEPTION);
+          /* 学号被重复注册问题 */
         } else if (e instanceof DuplicateKeyException) {
             return Result.build(ResultStatusEnum.CODE_HAVE);
         }
