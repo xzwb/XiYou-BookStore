@@ -1,8 +1,15 @@
 package cc.xzwb.bookstore.service.impl;
 
+import cc.xzwb.bookstore.mapper.RegisterMapper;
+import cc.xzwb.bookstore.pojo.Person;
 import cc.xzwb.bookstore.pojo.Result;
 import cc.xzwb.bookstore.pojo.ResultStatusEnum;
 import cc.xzwb.bookstore.service.RegisterService;
+import cc.xzwb.bookstore.zfjw.exception.PublicKeyException;
+import cc.xzwb.bookstore.zfjw.model.LoginStatus;
+import cc.xzwb.bookstore.zfjw.model.User;
+import cc.xzwb.bookstore.zfjw.service.LoginService;
+import cc.xzwb.bookstore.zfjw.service.impl.LoginServiceImpl;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
@@ -10,12 +17,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class RegisterServiceImpl implements RegisterService {
+
+    @Autowired
+    RegisterMapper registerMapper;
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
@@ -57,5 +68,62 @@ public class RegisterServiceImpl implements RegisterService {
         } else {
             return Result.build(ResultStatusEnum.SMS_CODE_FALSE);
         }
+    }
+
+    /**
+     *
+     * @param person 需要保存到数据库中的用户信息
+     * @param smsCode 短信验证码
+     * @param studentPassword 学生教务系统密码
+     * @return
+     * @throws LoginException
+     * @throws PublicKeyException
+     * @throws cc.xzwb.bookstore.zfjw.exception.LoginException
+     */
+    @Override
+    public Result register(Person person, String smsCode, String studentPassword) throws LoginException, PublicKeyException, cc.xzwb.bookstore.zfjw.exception.LoginException {
+        if (smsCodeService(person.getPhoneNumber(), smsCode)) {
+            if (ZFJWService(person.getStudentCode(), studentPassword)) {
+                registerMapper.insertPerson(person);
+                return Result.build(ResultStatusEnum.SUCCESS);
+            } else {
+                return Result.build(ResultStatusEnum.ZFJW_FALSE);
+            }
+        } else {
+            return Result.build(ResultStatusEnum.SMS_CODE_MISTAKE);
+        }
+    }
+
+    /**
+     * 验证是不是本校学生
+     * @param code 学号
+     * @param password 教务系统密码
+     * @return
+     * @throws LoginException
+     * @throws PublicKeyException
+     * @throws cc.xzwb.bookstore.zfjw.exception.LoginException
+     */
+    private Boolean ZFJWService(String code, String password) throws LoginException, PublicKeyException, cc.xzwb.bookstore.zfjw.exception.LoginException {
+        User user = User.builder(code, password);
+        LoginService loginService = new LoginServiceImpl("www.zfjw.xupt.edu.cn", user);
+        LoginStatus loginStatus = loginService.login();
+        if (!loginStatus.isSuccess()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 验证短信验证码
+     * @param phoneNumber 手机号
+     * @param smsCode 短信验证码
+     * @return
+     */
+    private Boolean smsCodeService(String phoneNumber, String smsCode) {
+        if (smsCode.equals(redisTemplate.opsForValue().get(phoneNumber))) {
+            redisTemplate.delete(phoneNumber);
+            return true;
+        }
+        return false;
     }
 }

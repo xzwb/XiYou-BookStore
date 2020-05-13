@@ -3,6 +3,7 @@ package cc.xzwb.bookstore.controller;
 import cc.xzwb.bookstore.pojo.Person;
 import cc.xzwb.bookstore.pojo.Result;
 import cc.xzwb.bookstore.service.RegisterService;
+
 import com.github.qcloudsms.httpclient.HTTPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,30 +38,20 @@ public class RegisterController {
                            @RequestPart("file") Part part,
                            @RequestParam String smsCode,
                            @RequestParam String studentPassword,
-                           HttpSession session) throws IOException {
+                           HttpSession session) throws Exception {
         long timeInMillis = Calendar.getInstance().getTimeInMillis();
         String src = session.getServletContext().getRealPath("/");
         String  playSrcFile = timeInMillis + part.getSubmittedFileName();
-        if (!"".equals(part.getSubmittedFileName())) {
+        // 判断是否上传图片
+        if (part.getSubmittedFileName() != null && !"".equals(part.getSubmittedFileName())) {
             person.setHeadSrc(playSrcFile);
             part.write(src + playSrcFile);
         }
-        return null;
+        return registerService.register(person, smsCode, studentPassword);
     }
 
     @PostMapping("/a/smsCode")
     public Result getSMSCode(@RequestBody Map<String, String> phoneNumber) throws HTTPException, IOException {
         return registerService.getSMSCode(phoneNumber.get("phoneNumber"));
     }
-
-    /**
-     * 测试文件上传
-     */
-//    @PostMapping("/test")
-//    public String file(@RequestPart("file") Part part,
-//                       HttpSession session) throws IOException {
-//        String src = session.getServletContext().getRealPath("/");
-//        part.write(src+"1");
-//        return "hello";
-//    }
 }

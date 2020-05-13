@@ -27,12 +27,14 @@ public class GlobalExceptionHandler {
     public Result except(HttpServletRequest request, Exception e) {
         /* 处理jsr303校验抛出的异常 */
         if (e instanceof MethodArgumentNotValidException) {
+            e.printStackTrace();
             BindingResult bindingResult = ((MethodArgumentNotValidException) e).getBindingResult();
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
             FieldError fieldError = fieldErrors.get(0);
             String errorMsg = fieldError.getDefaultMessage();
             return Result.build(ResultStatusEnum.BIND_EXCEPTION(errorMsg));
         } else if (e instanceof BindException) {
+            e.printStackTrace();
             BindException ex = (BindException) e;
             List<ObjectError> errors = ex.getAllErrors();
             ObjectError error = errors.get(0);

@@ -27,6 +27,16 @@ public enum ResultStatusEnum {
     IO_EXCEPTION(500, "保存图片文件错误"),
 
     /**
+     * 正方教务系统登录失败
+     */
+    ZFJW_FALSE(-3, "用户名或密码错误"),
+
+    /**
+     * 短信验证码错误
+     */
+    SMS_CODE_MISTAKE(-4, "短信验证码错误"),
+
+    /**
      * 请求错误
      */
     BIND_EXCEPTION(400);

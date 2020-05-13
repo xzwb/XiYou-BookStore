@@ -14,6 +14,8 @@ import javax.validation.constraints.Pattern;
 @Data
 public class Person {
 
+    String headSrc;
+
     @NotNull
     // 学号为8位数字
     @Pattern(regexp = "^\\d{8}$", message = "学号格式错误")
@@ -29,6 +31,6 @@ public class Person {
     @Pattern(regexp = "^1([34578])\\d{9}$",message = "手机号码格式错误")
     String phoneNumber;
 
-    String headSrc;
+
 
 }
