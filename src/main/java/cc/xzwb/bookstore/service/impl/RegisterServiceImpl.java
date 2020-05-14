@@ -17,6 +17,7 @@ import com.github.qcloudsms.httpclient.HTTPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.Part;
@@ -87,6 +88,8 @@ public class RegisterServiceImpl implements RegisterService {
      */
     @Override
     public Result register(Person person, String smsCode, String studentPassword, String src, Part part, boolean haveSrc) throws LoginException, PublicKeyException, cc.xzwb.bookstore.zfjw.exception.LoginException {
+        // 用户密码使用md5加密后保存到数据库
+        person.setPassword(DigestUtils.md5DigestAsHex(person.getPassword().getBytes()));
         if (smsCodeService(person.getPhoneNumber(), smsCode)) {
             if (ZFJWService(person.getStudentCode(), studentPassword)) {
                 registerMapper.insertPerson(person);
