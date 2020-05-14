@@ -2,6 +2,9 @@ package cc.xzwb.bookstore.pojo;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 返回给前端的结果封装
  */
@@ -12,7 +15,8 @@ public class Result {
     // 详细信息
     private String message;
     // 附带的内容
-    private Object data;
+//    private Object data;
+    private List<Object> data = new ArrayList<>();
 
     /***** 构造方法 *****/
     private Result() {
@@ -23,20 +27,16 @@ public class Result {
         this.message = message;
     }
 
-    private Result(int status, String message, Object data) {
-        this.status = status;
-        this.message = message;
-        this.data = data;
-    }
-
     /** 使用build方法创建Result对象 **/
     public static Result build(ResultStatusEnum statusEnum) {
         return new Result(statusEnum.getStatus(), statusEnum.getMessage());
     }
 
-    public static Result build(ResultStatusEnum statusEnum,  Object data) {
+    public static Result build(ResultStatusEnum statusEnum,  Object ... objects) {
         Result result = Result.build(statusEnum);
-        result.data = data;
+        for (Object data : objects) {
+            result.data.add(data);
+        }
         return result;
     }
 }

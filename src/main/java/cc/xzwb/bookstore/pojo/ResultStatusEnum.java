@@ -42,6 +42,21 @@ public enum ResultStatusEnum {
     CODE_HAVE(-5, "该学号已经被注册"),
 
     /**
+     * 获取不到token
+     */
+    TOKEN_FALSE(-1, "长时间未操作请重新登录"),
+
+    /**
+     * token更新
+     */
+    TOKEN_CHANGE(201, "token更新了"),
+
+    /**
+     * 用户名或者密码错误
+     */
+    LOGIN_FALSE(-6, "用户名或者密码错误"),
+
+    /**
      * 请求错误
      */
     BIND_EXCEPTION(400);

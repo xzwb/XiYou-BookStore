@@ -50,6 +50,9 @@ public class GlobalExceptionHandler {
           /* 学号被重复注册问题 */
         } else if (e instanceof DuplicateKeyException) {
             return Result.build(ResultStatusEnum.CODE_HAVE);
+          /* 没有token */
+        } else if (e instanceof LoginTokenException) {
+            return Result.build(ResultStatusEnum.TOKEN_FALSE);
         }
         e.printStackTrace();
         return Result.build(ResultStatusEnum.EXCEPTION);

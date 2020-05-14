@@ -66,7 +66,7 @@ public class RegisterServiceImpl implements RegisterService {
              * 如果短信发送成功把得到的短信验证码存到redis中
              * 并设置6分钟过期
              */
-            redisTemplate.opsForValue().set(phoneNumber, smsCode, 3600, TimeUnit.SECONDS);
+            redisTemplate.opsForValue().set(phoneNumber, smsCode, 360, TimeUnit.SECONDS);
             return Result.build(ResultStatusEnum.SUCCESS);
         } else {
             return Result.build(ResultStatusEnum.SMS_CODE_FALSE);
