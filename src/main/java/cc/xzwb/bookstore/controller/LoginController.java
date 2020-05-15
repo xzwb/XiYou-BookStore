@@ -26,8 +26,4 @@ public class LoginController {
          return loginService.login(person.getStudentCode(), person.getPassword());
     }
 
-    @GetMapping("/u/test")
-    public String test() {
-        return "string";
-    }
 }
