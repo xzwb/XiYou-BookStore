@@ -6,4 +6,11 @@
     <select id="selectPersonByStudentCode" resultType="person">
         select *from user where studentCode = #{studentCode};
     </select>
+
+    <insert id="insertBook" keyProperty="bookId" useGeneratedKeys="true">
+        insert into book values
+        (default, #{studentCode}, #{bookName},
+        #{bookStyle, typeHandler = cc.xzwb.bookstore.typeHandler.MyTypeHandler},
+        #{bookIntroduction}, #{bookSrc}, #{bookDate});
+    </insert>
 </mapper>
