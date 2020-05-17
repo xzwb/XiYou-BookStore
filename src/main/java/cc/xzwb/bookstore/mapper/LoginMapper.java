@@ -6,6 +6,13 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface LoginMapper {
+
+    /**
+     * 登录
+     * @param studentCode
+     * @param password
+     * @return
+     */
     Person loginSelect(@Param("studentCode") String studentCode,
                        @Param("password") String password);
 }

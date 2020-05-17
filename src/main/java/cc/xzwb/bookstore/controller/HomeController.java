@@ -23,12 +23,22 @@ public class HomeController {
     @Autowired
     HomeService homeService;
 
+    /**
+     * 获取用户信息
+     * @param request
+     * @return
+     */
     @GetMapping("/u/home")
     public Result home(HttpServletRequest request) {
         String studentCode = (String) request.getAttribute("studentCode");
         return homeService.homeService(studentCode);
     }
 
+    /**
+     * 用户注销
+     * @param request
+     * @return
+     */
     @GetMapping("/u/logout")
     public Result logout(HttpServletRequest request) {
         String studentCode = (String) request.getAttribute("studentCode");

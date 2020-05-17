@@ -7,6 +7,11 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface HomeMapper {
 
+    /**
+     * 根据学号查询用户信息
+     * @param studentCode
+     * @return
+     */
     Person selectPersonByStudentCode(@Param("studentCode") String studentCode);
 
 }

@@ -53,6 +53,13 @@ public class RegisterController {
         return registerService.register(person, smsCode, studentPassword, src, part, haveSrc);
     }
 
+    /**
+     * 获取短信验证码
+     * @param phoneNumber
+     * @return
+     * @throws HTTPException
+     * @throws IOException
+     */
     @PostMapping("/a/smsCode")
     public Result getSMSCode(@RequestBody Map<String, String> phoneNumber) throws HTTPException, IOException {
         return registerService.getSMSCode(phoneNumber.get("phoneNumber"));

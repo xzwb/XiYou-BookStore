@@ -11,6 +11,7 @@ import javax.servlet.http.Part;
 import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -19,9 +20,27 @@ public class BookController {
     @Autowired
     BookService bookService;
 
-    @GetMapping("/a/book/{bookId}")
+    /**
+     * 根据书的id获取书的详细信息
+     * @param bookId
+     * @return
+     */
+    @GetMapping("/u/book/{bookId}")
     public Result getBook(@PathVariable("bookId") int bookId) {
         return bookService.getBook(bookId);
+    }
+
+    /**
+     * 根据种类来获取书籍的list信息
+     * @param bookStyle
+     * @param sort 1表示按时间排序 2表示按价格升序 3表示按价格降序
+     * @return
+     */
+    @GetMapping("/u/book/style/{sort}/{page}")
+    public Result getBooksByStyle(@RequestBody Map<String, String> bookStyle,
+                                  @PathVariable("sort") int sort,
+                                  @PathVariable("page") int page) {
+        return bookService.getBookByStyle(bookStyle.get("bookStyle"), sort, page);
     }
 
     @PostMapping("/u/release")

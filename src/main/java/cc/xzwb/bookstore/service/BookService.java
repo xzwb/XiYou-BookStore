@@ -9,4 +9,13 @@ public interface BookService {
     Result release(Book book, String fileURI, Part part);
 
     Result getBook(int BookId);
+
+    /**
+     * 按照书的中的种类查找
+     * @param style 种类
+     * @param sort 排序方式1表示按时间排序 2表示按价格升序 3表示按价格降序
+     * @param page 分页
+     * @return
+     */
+    Result getBookByStyle(String style, int sort, int page);
 }

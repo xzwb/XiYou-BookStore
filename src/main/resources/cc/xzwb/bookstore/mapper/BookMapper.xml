@@ -30,4 +30,42 @@
         on book.studentCode = user.studentCode
         where book.bookId = #{bookId};
     </select>
+
+    <select id="selectBookByStyleByPrice" resultMap="getBookByBookId">
+        select userName, book.*
+        from book
+        left join user
+        on book.studentCode = user.studentCode
+        where book.bookStyle like concat('%', #{bookStyle}, '%')
+        order by price
+        limit #{page}, 7;
+    </select>
+
+    <select id="selectBookByStyleByDate" resultMap="getBookByBookId">
+        select userName, book.*
+        from book
+        left join user
+        on book.studentCode = user.studentCode
+        where book.bookStyle like concat('%', #{bookStyle}, '%')
+        order by BookDate desc
+        limit #{page}, 7;
+    </select>
+
+    <select id="selectBookByStyleByDateDESC" resultMap="getBookByBookId">
+        select userName, book.*
+        from book
+        left join user
+        on book.studentCode = user.studentCode
+        where book.bookStyle like concat('%', #{bookStyle}, '%')
+        order by price desc
+        limit #{page}, 7;
+    </select>
+
+    <select id="selectTotalByStyle" resultType="int">
+        select count(*)
+        from book
+        left join user
+        on book.studentCode = user.studentCode
+        where book.bookStyle like concat('%', #{bookStyle}, '%');
+    </select>
 </mapper>
