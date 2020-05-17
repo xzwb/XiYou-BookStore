@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cc.xzwb.bookstore.mapper.BookMapper">
+    <resultMap id="getBookByBookId" type="book">
+        <id property="bookId" column="bookId"/>
+        <result property="userName" column="userName"/>
+        <result property="studentCode" column="studentCode"/>
+        <result property="bookName" column="bookName"/>
+        <result property="bookStyle" column="bookStyle" typeHandler="cc.xzwb.bookstore.typeHandler.MyTypeHandler"/>
+        <result property="bookIntroduction" column="bookIntroduction"/>
+        <result property="bookSrc" column="bookSrc"/>
+        <result property="bookDate" column="bookDate"/>
+        <result property="price" column="price"/>
+    </resultMap>
+
+    <insert id="insertBook" keyProperty="bookId" useGeneratedKeys="true">
+        insert into book values
+        (default, #{studentCode}, #{bookName},
+        #{bookStyle, typeHandler = cc.xzwb.bookstore.typeHandler.MyTypeHandler},
+        #{bookIntroduction}, #{bookSrc}, #{bookDate}, #{price});
+    </insert>
+
+    <select id="selectBookByBookId" resultMap="getBookByBookId">
+        select userName, book.*
+        from book
+        left join user
+        on book.studentCode = user.studentCode
+        where book.bookId = #{bookId};
+    </select>
+</mapper>

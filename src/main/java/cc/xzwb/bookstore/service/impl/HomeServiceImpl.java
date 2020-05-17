@@ -31,11 +31,4 @@ public class HomeServiceImpl implements HomeService {
         redisTemplate.delete(studentCode);
         return Result.build(ResultStatusEnum.SUCCESS);
     }
-
-    @Override
-    public Result release(Book book, String fileURI, Part part) {
-        homeMapper.insertBook(book);
-        new SaveFileThread(part, fileURI).run();
-        return Result.build(ResultStatusEnum.SUCCESS, book);
-    }
 }

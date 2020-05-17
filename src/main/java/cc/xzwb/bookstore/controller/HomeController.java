@@ -35,16 +35,4 @@ public class HomeController {
         return homeService.logout(studentCode);
     }
 
-    @PostMapping("/u/release")
-    public Result release(@Valid Book book,
-                          @RequestPart("file") Part part,
-                          HttpServletRequest request) {
-        book.setStudentCode((String) request.getAttribute("studentCode"));
-        // 获取图书发布时间
-        book.setBookDate(new Date());
-        long timeInMillis = Calendar.getInstance().getTimeInMillis();
-        book.setBookSrc(timeInMillis + part.getSubmittedFileName());
-        String fileURI = request.getSession().getServletContext().getRealPath("/") + book.getBookSrc();
-        return homeService.release(book, fileURI, part);
-    }
 }

@@ -1,6 +1,7 @@
 package cc.xzwb.bookstore.pojo;
 
 import lombok.Data;
+import org.apache.ibatis.type.Alias;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * 书籍信息
  */
+@Alias("book")
 @Data
 public class Book {
     // 书籍名称
@@ -30,4 +32,7 @@ public class Book {
     private String bookSrc;
     // 发布日期
     private Date bookDate;
+    // 书的价格
+    @NotNull
+    private float price;
 }
