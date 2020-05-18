@@ -33,8 +33,8 @@ public class JWTInterceptor extends HandlerInterceptorAdapter {
         Date expire = JWT.decode(token).getExpiresAt();
         // 学号
         String studentCode = JWT.decode(token).getClaim("studentCode").asString();
-        // 首先redis数据库中要有这个token 注销后redis中没有了
-        if (redisTemplate.opsForValue().get(studentCode) == null) {
+        // 多设备登录只能登录在一个设备
+        if (!token.equals(redisTemplate.opsForValue().get(studentCode))) {
             throw new LoginTokenException();
         }
         request.setAttribute("studentCode", studentCode);

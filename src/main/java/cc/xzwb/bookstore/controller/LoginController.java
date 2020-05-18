@@ -24,5 +24,4 @@ public class LoginController {
     public Result login(Person person) {
          return loginService.login(person.getStudentCode(), person.getPassword());
     }
-
 }

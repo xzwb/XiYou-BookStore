@@ -29,7 +29,7 @@ public enum ResultStatusEnum {
     /**
      * 正方教务系统登录失败
      */
-    ZFJW_FALSE(-3, "用户名或密码错误"),
+    ZFJW_FALSE(-3, "教务系统验证错误"),
 
     /**
      * 短信验证码错误

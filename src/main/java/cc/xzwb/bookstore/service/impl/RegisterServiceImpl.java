@@ -95,6 +95,7 @@ public class RegisterServiceImpl implements RegisterService {
                 registerMapper.insertPerson(person);
                 // 使用异步保存头像文件
                 if (haveSrc) {
+                    System.out.println(src);
                     new SaveFileThread(part, src).run();
                 }
                 return Result.build(ResultStatusEnum.SUCCESS);
