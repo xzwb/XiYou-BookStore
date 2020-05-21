@@ -18,4 +18,13 @@ public interface BookService {
      * @return
      */
     Result getBookByStyle(String style, int sort, int page);
+
+    /**
+     * 获取当前学号用户发布的书籍
+     * @param studentCode
+     * @return
+     */
+    Result getUserBook(String studentCode, int page);
+
+    Result deleteBook(String studentCode, int bookId, String src);
 }

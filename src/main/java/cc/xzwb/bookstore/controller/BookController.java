@@ -43,6 +43,13 @@ public class BookController {
         return bookService.getBookByStyle(bookStyle.get("bookStyle"), sort, page);
     }
 
+    /**
+     * 发布
+     * @param book
+     * @param part
+     * @param request
+     * @return
+     */
     @PostMapping("/u/release")
     public Result release(@Valid Book book,
                           @RequestPart("file") Part part,
@@ -54,5 +61,25 @@ public class BookController {
         book.setBookSrc(timeInMillis + part.getSubmittedFileName());
         String fileURI = request.getSession().getServletContext().getRealPath("/") + book.getBookSrc();
         return bookService.release(book, fileURI, part);
+    }
+
+    /**
+     * 获取用户自己发布的书籍
+     * @param request
+     * @return
+     */
+    @GetMapping("/u/myBook/{page}")
+    public Result getMyBook(@PathVariable("page") int page,
+                            HttpServletRequest request) {
+        String studentCode = (String) request.getAttribute("studentCode");
+        return bookService.getUserBook(studentCode, page);
+    }
+
+    @PostMapping("/u/delete/book/{bookId}")
+    public Result deleteBook(@PathVariable("bookId") int bookId,
+                             HttpServletRequest request) {
+        String studentCode = (String) request.getAttribute("studentCode");
+        String src = request.getSession().getServletContext().getRealPath("/");
+        return bookService.deleteBook(studentCode, bookId, src);
     }
 }

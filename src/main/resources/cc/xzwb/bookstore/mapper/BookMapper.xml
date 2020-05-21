@@ -68,4 +68,16 @@
         on book.studentCode = user.studentCode
         where book.bookStyle like concat('%', #{bookStyle}, '%');
     </select>
+
+    <select id="getUserBook" resultMap="getBookByBookId">
+        select *from book where studentCode = #{studentCode} limit #{page}, 7;
+    </select>
+
+    <select id="getUserBookTotal" resultType="int">
+        select count(*) from book where studentCode = #{studentCode};
+    </select>
+
+    <delete id="deleteBook">
+        delete from book where bookId = #{bookId} and studentCode = #{studentCode};
+    </delete>
 </mapper>

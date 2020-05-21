@@ -5,6 +5,7 @@ import cc.xzwb.bookstore.pojo.Book;
 import cc.xzwb.bookstore.pojo.Result;
 import cc.xzwb.bookstore.pojo.ResultStatusEnum;
 import cc.xzwb.bookstore.service.BookService;
+import cc.xzwb.bookstore.thread.DeleteFileThread;
 import cc.xzwb.bookstore.thread.SaveFileThread;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Part;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -50,7 +53,9 @@ public class BookServiceImpl implements BookService {
         if ("all".equals(style)) {
             style = "";
         }
-        int total = bookMapper.selectTotalByStyle(style);
+//        int total = bookMapper.selectTotalByStyle(style);
+        Map<String, Integer> total = new HashMap<>();
+        total.put("booksNumber", bookMapper.selectTotalByStyle(style));
         page = (page - 1) * 7;
         List<Book> books = new ArrayList<>();
         if (sort == 1) {
@@ -61,5 +66,30 @@ public class BookServiceImpl implements BookService {
             books = bookMapper.selectBookByStyleByDateDESC(style, page);
         }
         return Result.build(ResultStatusEnum.SUCCESS, books, total);
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Override
+    public Result getUserBook(String studentCode, int page) {
+        page = (page - 1) * 7;
+        Map<String, Integer> total = new HashMap<>();
+        total.put("booksNumber", bookMapper.getUserBookTotal(studentCode));
+        List<Book> books = new ArrayList<>();
+        books = bookMapper.getUserBook(studentCode, page);
+        return Result.build(ResultStatusEnum.SUCCESS, books, total);
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Override
+    public Result deleteBook(String studentCode, int bookId, String src) {
+        Book book = bookMapper.selectBookByBookId(bookId);
+        if (book != null) {
+            if (book.getStudentCode().equals(studentCode)) {
+                src += book.getBookSrc();
+                new DeleteFileThread(src).run();
+            }
+        }
+        bookMapper.deleteBook(studentCode, bookId);
+        return Result.build(ResultStatusEnum.SUCCESS);
     }
 }
