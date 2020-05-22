@@ -2,10 +2,7 @@ package cc.xzwb.bookstore.service.impl;
 
 import cc.xzwb.bookstore.mapper.BookMapper;
 import cc.xzwb.bookstore.mapper.UserMapper;
-import cc.xzwb.bookstore.pojo.Book;
-import cc.xzwb.bookstore.pojo.Person;
-import cc.xzwb.bookstore.pojo.Result;
-import cc.xzwb.bookstore.pojo.ResultStatusEnum;
+import cc.xzwb.bookstore.pojo.*;
 import cc.xzwb.bookstore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,5 +43,28 @@ public class UserServiceImpl implements UserService {
         List<Book> books = new ArrayList<>();
         books = bookMapper.getUserBook(studentCode, page);
         return Result.build(ResultStatusEnum.SUCCESS, books, total);
+    }
+
+    @Override
+    public Result addBuyCar(BuyCarForAdd buyCar) {
+        userMapper.addBuyCar(buyCar);
+        return Result.build(ResultStatusEnum.SUCCESS);
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Override
+    public Result selectBuyCar(String studentCode, int page) {
+        page = (page - 1) * 7;
+        Map<String, Integer> map = new HashMap<>();
+        map.put("total", userMapper.selectTotal(studentCode));
+        List<BuyCarForSelect> list = new ArrayList<>();
+        list = userMapper.selectBuyCar(studentCode, page);
+        return Result.build(ResultStatusEnum.SUCCESS, list, map);
+    }
+
+    @Override
+    public Result deleteBuyCar(String studentCode, int buyCarId) {
+        userMapper.deleteBuyCar(studentCode, buyCarId);
+        return Result.build(ResultStatusEnum.SUCCESS);
     }
 }

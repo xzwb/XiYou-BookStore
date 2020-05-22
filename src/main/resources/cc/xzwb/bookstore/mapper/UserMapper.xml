@@ -3,6 +3,23 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.xzwb.bookstore.mapper.UserMapper">
+
+    <resultMap id="buyCar" type="buyCarForSelect">
+        <id column="buyCarId" property="buyCarId"/>
+        <result column="addTime" property="addTime"/>
+        <association property="book" javaType="cc.xzwb.bookstore.pojo.Book">
+            <id column="bookId" property="bookId"/>
+            <result column="studentCode" property="studentCode"/>
+            <result column="bookName" property="bookName"/>
+            <result column="bookStyle" property="bookStyle" typeHandler="cc.xzwb.bookstore.typeHandler.MyTypeHandler"/>
+            <result column="bookIntroduction" property="bookIntroduction"/>
+            <result column="bookSrc" property="bookSrc"/>
+            <result column="userName" property="userName"/>
+            <result column="bookDate" property="bookDate"/>
+            <result column="price" property="price"/>
+        </association>
+    </resultMap>
+
     <select id="selectUser" resultType="person">
         select *from user where userName = #{userInformation} or studentCode = #{userInformation} limit #{page}, 7;
     </select>
@@ -10,4 +27,28 @@
     <select id="getUserTotal" resultType="int">
         select count(*) from user where userName = #{userInformation} or studentCode = #{userInformation};
     </select>
+
+    <insert id="addBuyCar" parameterType="buyCarForAdd">
+        insert into buyCar values(default, #{bookId}, #{studentCode}, #{addTime});
+    </insert>
+
+    <select id="selectBuyCar" resultMap="buyCar">
+        select b.addTime, b.buyCarId, book.*, u.userName
+        from buyCar b
+        left join book
+        on b.bookId = book.bookId
+        left join user u
+        on u.studentCode = book.studentCode
+        where b.studentCode = #{studentCode}
+        order by addTime desc
+        limit #{page}, 7;
+    </select>
+
+    <select id="selectTotal" resultType="int">
+        select count(*) from buyCar where studentCode = #{studentCode};
+    </select>
+
+    <delete id="deleteBuyCar">
+        delete from buyCar where studentCode = #{studentCode} and buyCarId = #{buyCarId};
+    </delete>
 </mapper>
