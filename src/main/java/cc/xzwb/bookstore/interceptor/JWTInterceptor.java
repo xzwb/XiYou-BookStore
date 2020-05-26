@@ -50,7 +50,7 @@ public class JWTInterceptor extends HandlerInterceptorAdapter {
                     out.write(JSON.toJSONString(result));
                     out.flush();
                     out.close();
-                    return true;
+                    return false;
                 }
             }
             redisTemplate.opsForValue().set(studentCode, token, 1800, TimeUnit.SECONDS);
