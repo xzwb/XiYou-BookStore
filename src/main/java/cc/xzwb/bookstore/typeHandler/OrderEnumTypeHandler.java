@@ -27,7 +27,7 @@ public class OrderEnumTypeHandler implements TypeHandler<OrderStatus> {
         } else if (status == 3) {
             return OrderStatus.CANCEL;
         } else {
-            return OrderStatus.REFUND;
+            return OrderStatus.END_TIME;
         }
     }
 
@@ -41,7 +41,7 @@ public class OrderEnumTypeHandler implements TypeHandler<OrderStatus> {
         } else if (status == 3) {
             return OrderStatus.CANCEL;
         } else {
-            return OrderStatus.REFUND;
+            return OrderStatus.END_TIME;
         }
     }
 
@@ -55,7 +55,7 @@ public class OrderEnumTypeHandler implements TypeHandler<OrderStatus> {
         } else if (status == 3) {
             return OrderStatus.CANCEL;
         } else {
-            return OrderStatus.REFUND;
+            return OrderStatus.END_TIME;
         }
     }
 }

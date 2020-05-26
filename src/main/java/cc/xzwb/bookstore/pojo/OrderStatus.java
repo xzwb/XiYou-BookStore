@@ -1,5 +1,8 @@
 package cc.xzwb.bookstore.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum OrderStatus {
     /**
      * 代付款
@@ -17,9 +20,9 @@ public enum OrderStatus {
     CANCEL(3, "订单已取消"),
 
     /**
-     * 已退款
+     * 已过期
      */
-    REFUND(4, "已退款");
+    END_TIME(4, "已过期");
 
     int status;
 

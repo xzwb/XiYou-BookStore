@@ -1,8 +1,6 @@
 package cc.xzwb.bookstore.mapper;
 
-import cc.xzwb.bookstore.pojo.BuyCarForAdd;
-import cc.xzwb.bookstore.pojo.BuyCarForSelect;
-import cc.xzwb.bookstore.pojo.Person;
+import cc.xzwb.bookstore.pojo.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -55,4 +53,45 @@ public interface UserMapper {
      */
     void deleteBuyCar(@Param("studentCode") String studentCode,
                       @Param("buyCarId") int buyCarId);
+
+    /**
+     * 保存订单
+     * @param userOrder
+     */
+    void insertBookOrder(UserOrder userOrder);
+
+    /**
+     * 通过学号查询用户的订单信息
+     * @param studentCode
+     * @param page
+     * @return
+     */
+    List<UserOrder> getOrderByCode(@Param("studentCode") String studentCode,
+                                   @Param("page") int page);
+
+    /**
+     * 用户订单的总数
+     * @param studentCode
+     * @return
+     */
+    int getOrderTotal(@Param("studentCode") String studentCode);
+
+    /**
+     * 修改订单状态
+     * @param orderId
+     * @param orderStatus
+     */
+    void updateOrderStatus(@Param("orderId") int orderId,
+                           @Param("status") OrderStatus orderStatus);
+
+    /**
+     * 取消订单
+     * @param orderId
+     * @param orderStatus
+     * @param studentCode
+     */
+    void cancelOrder(@Param("orderId") int orderId,
+                     @Param("status") OrderStatus orderStatus,
+                     @Param("studentCode") String studentCode);
+
 }

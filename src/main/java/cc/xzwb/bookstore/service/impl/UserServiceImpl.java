@@ -5,6 +5,7 @@ import cc.xzwb.bookstore.mapper.UserMapper;
 import cc.xzwb.bookstore.pojo.*;
 import cc.xzwb.bookstore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -22,6 +24,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     BookMapper bookMapper;
+
+    @Autowired
+    RedisTemplate<String, String> redisTemplate;
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     @Override
@@ -67,4 +72,60 @@ public class UserServiceImpl implements UserService {
         userMapper.deleteBuyCar(studentCode, buyCarId);
         return Result.build(ResultStatusEnum.SUCCESS);
     }
+
+    @Override
+    public Result saveBookOrder(UserOrder userOrder) {
+        userMapper.insertBookOrder(userOrder);
+        // 对于没有支付的订单在redis中保存2400s
+        redisTemplate.opsForValue().set(userOrder.getOrderId()+"", "等待支付", 2400, TimeUnit.SECONDS);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("orderId", userOrder.getOrderId());
+        return Result.build(ResultStatusEnum.SUCCESS, map);
+    }
+
+    @Override
+    public Result buyBookFromPage(UserOrder userOrder) {
+        userMapper.insertBookOrder(userOrder);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("orderId", userOrder.getOrderId());
+        return Result.build(ResultStatusEnum.SUCCESS, map);
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Override
+    public Result selectOrder(String studentCode, int page) {
+        page = (page - 1) * 7;
+        List<UserOrder> userOrders = new ArrayList<>();
+        userOrders = userMapper.getOrderByCode(studentCode, page);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("total", userMapper.getOrderTotal(studentCode));
+        // 在redis中判断等待支付的订单是否过期
+        for (UserOrder userOrder : userOrders) {
+            if (userOrder.getOrderStatus().equals(OrderStatus.WAIT_PAY)) {
+                if (redisTemplate.opsForValue().get(userOrder.getOrderId()+"") == null) {
+                    userOrder.setOrderStatus(OrderStatus.END_TIME);
+                    userMapper.updateOrderStatus(userOrder.getOrderId(), OrderStatus.END_TIME);
+                }
+            }
+        }
+        return Result.build(ResultStatusEnum.SUCCESS, userOrders, map);
+    }
+
+    @Override
+    public Result payOrder(int orderId) {
+        userMapper.updateOrderStatus(orderId, OrderStatus.SUCCESS_PAY);
+        return Result.build(ResultStatusEnum.SUCCESS);
+    }
+
+    @Override
+    public Result cancelOrder(int orderId, String studentCode) {
+        userMapper.cancelOrder(orderId, OrderStatus.CANCEL, studentCode);
+        return Result.build(ResultStatusEnum.SUCCESS);
+    }
+
+    @Override
+    public Result payBuyCar(List<Integer> buyCarIds, String studentCode) {
+        return null;
+    }
+
 }

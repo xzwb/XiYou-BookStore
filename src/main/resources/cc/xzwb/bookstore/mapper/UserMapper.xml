@@ -20,6 +20,25 @@
         </association>
     </resultMap>
 
+    <resultMap id="order" type="userOrder">
+        <id property="orderId" column="orderId"/>
+        <result property="studentCode" column="buyer"/>
+        <result property="bookId" column="bookId"/>
+        <result property="buyDate" column="buyDate"/>
+        <result property="orderStatus" column="orderStatus" typeHandler="cc.xzwb.bookstore.typeHandler.OrderEnumTypeHandler"/>
+        <association property="book" javaType="cc.xzwb.bookstore.pojo.Book">
+            <id column="bookId" property="bookId"/>
+            <result column="studentCode" property="studentCode"/>
+            <result column="bookName" property="bookName"/>
+            <result column="bookStyle" property="bookStyle" typeHandler="cc.xzwb.bookstore.typeHandler.MyTypeHandler"/>
+            <result column="bookIntroduction" property="bookIntroduction"/>
+            <result column="bookSrc" property="bookSrc"/>
+            <result column="userName" property="userName"/>
+            <result column="bookDate" property="bookDate"/>
+            <result column="price" property="price"/>
+        </association>
+    </resultMap>
+
     <select id="selectUser" resultType="person">
         select *from user where userName = #{userInformation} or studentCode = #{userInformation} limit #{page}, 7;
     </select>
@@ -51,4 +70,37 @@
     <delete id="deleteBuyCar">
         delete from buyCar where studentCode = #{studentCode} and buyCarId = #{buyCarId};
     </delete>
+
+    <insert id="insertBookOrder" useGeneratedKeys="true" keyProperty="orderId" parameterType="userOrder">
+        insert into userOrder values(default, #{studentCode},
+        #{bookId}, #{buyDate},
+        #{orderStatus, typeHandler = cc.xzwb.bookstore.typeHandler.OrderEnumTypeHandler});
+    </insert>
+
+    <select id="getOrderByCode" resultMap="order">
+        select b.*, u.userName, o.studentCode buyer, o.orderId, o.buyDate, o.orderStatus, o.bookId
+        from userOrder o
+        left join book b
+        on o.bookId = b.bookId
+        left join user u
+        on b.studentCode = u.studentCode
+        where o.studentCode = #{studentCode}
+        order by o.buyDate desc
+        limit #{page}, 7;
+    </select>
+
+    <select id="getOrderTotal" resultType="int">
+        select count(*) from userOrder where studentCode = #{studentCode};
+    </select>
+
+    <update id="updateOrderStatus">
+        update userOrder set orderStatus = #{status, typeHandler = cc.xzwb.bookstore.typeHandler.OrderEnumTypeHandler}
+        where orderId = #{orderId};
+    </update>
+
+    <update id="cancelOrder">
+        update userOrder
+        set orderStatus = #{status, typeHandler = cc.xzwb.bookstore.typeHandler.OrderEnumTypeHandler}
+        where orderId = #{orderId} and #{studentCode} = #{studentCode} and orderStatus = 1;
+    </update>
 </mapper>
