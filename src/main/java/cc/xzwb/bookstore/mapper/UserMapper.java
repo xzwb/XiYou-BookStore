@@ -94,4 +94,9 @@ public interface UserMapper {
                      @Param("status") OrderStatus orderStatus,
                      @Param("studentCode") String studentCode);
 
+    /**
+     * 获取bookId
+     */
+    int getBookIdByBuyCarId(@Param("buyCarId") int buyCarId);
+
 }

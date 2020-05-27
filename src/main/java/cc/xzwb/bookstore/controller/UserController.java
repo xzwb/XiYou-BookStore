@@ -105,9 +105,9 @@ public class UserController {
     }
 
     @PostMapping("/u/pay/buyCar")
-    public Result payBuyCar(List<Integer> buyCarIds,
+    public Result payBuyCar(@RequestBody List<Integer> buyCarIds,
                             HttpServletRequest request) {
         String studentCode = (String) request.getAttribute("studentCode");
-        return null;
+        return userService.payBuyCar(buyCarIds, studentCode);
     }
 }

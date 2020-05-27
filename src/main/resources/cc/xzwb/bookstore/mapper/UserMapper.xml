@@ -103,4 +103,8 @@
         set orderStatus = #{status, typeHandler = cc.xzwb.bookstore.typeHandler.OrderEnumTypeHandler}
         where orderId = #{orderId} and #{studentCode} = #{studentCode} and orderStatus = 1;
     </update>
+
+    <select id="getBookIdByBuyCarId" resultType="int">
+        select bookId from buyCar where buyCarId = #{buyCarId};
+    </select>
 </mapper>

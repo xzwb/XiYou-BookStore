@@ -8,12 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -123,9 +121,25 @@ public class UserServiceImpl implements UserService {
         return Result.build(ResultStatusEnum.SUCCESS);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
     @Override
     public Result payBuyCar(List<Integer> buyCarIds, String studentCode) {
-        return null;
+        for (Integer buyCarId : buyCarIds) {
+            payBuyCar(buyCarId, studentCode);
+        }
+        return Result.build(ResultStatusEnum.SUCCESS);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+    public void payBuyCar(int buyCarId, String studentCode) {
+        Date date = new Date();
+        // 获取bookId
+        int bookId = userMapper.getBookIdByBuyCarId(buyCarId);
+        // 删除购物车
+        userMapper.deleteBuyCar(studentCode, buyCarId);
+        // 构建订单
+        UserOrder userOrder = UserOrder.build(studentCode, bookId, date, OrderStatus.SUCCESS_PAY);
+        userMapper.insertBookOrder(userOrder);
     }
 
 }
