@@ -99,4 +99,19 @@ public interface UserMapper {
      */
     int getBookIdByBuyCarId(@Param("buyCarId") int buyCarId);
 
+    /**
+     * 获取卖出的所有书籍
+     * @param studentCode
+     * @return
+     */
+    int getSellTotal(@Param("studentCode") String studentCode);
+
+    /**
+     * 获取到用户卖出的书籍
+     * @param studentCode
+     * @param page
+     * @return
+     */
+    List<UserSell> getUserSell(@Param("studentCode") String studentCode,
+                               @Param("page") int page);
 }

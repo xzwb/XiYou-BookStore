@@ -83,5 +83,19 @@ public interface UserService {
      */
     Result cancelOrder(int orderId, String studentCode);
 
+    /**
+     * 支付购物车的东西
+     * @param buyCarIds
+     * @param studentCode
+     * @return
+     */
     Result payBuyCar(List<Integer> buyCarIds, String studentCode);
+
+    /**
+     * 获取用户卖出的东西
+     * @param studentCode
+     * @param page
+     * @return
+     */
+    Result getSell(String studentCode, int page);
 }

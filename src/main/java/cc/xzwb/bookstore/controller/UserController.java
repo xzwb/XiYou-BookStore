@@ -45,6 +45,12 @@ public class UserController {
         return userService.getBookByStudentCode(studentCode, page);
     }
 
+    /**
+     * 添加购物车
+     * @param buyCar
+     * @param request
+     * @return
+     */
     @PostMapping("/u/add/buyCar")
     public Result addBookBuyCar(@Valid @RequestBody BuyCarForAdd buyCar,
                                 HttpServletRequest request) {
@@ -53,6 +59,12 @@ public class UserController {
         return userService.addBuyCar(buyCar);
     }
 
+    /**
+     * 用户查看购物车
+     * @param page
+     * @param request
+     * @return
+     */
     @GetMapping("/u/look/buyCar/{page}")
     public Result selectBuyCar(@PathVariable("page") int page,
                                HttpServletRequest request) {
@@ -60,6 +72,12 @@ public class UserController {
         return userService.selectBuyCar(studentCode, page);
     }
 
+    /**
+     * 删除购物车中的商品 一件
+     * @param buyCarId
+     * @param request
+     * @return
+     */
     @PostMapping("/u/delete/buyCar/{buyCarId}")
     public Result deleteBuyCar(@PathVariable("buyCarId") int buyCarId,
                                HttpServletRequest request) {
@@ -67,6 +85,12 @@ public class UserController {
         return userService.deleteBuyCar(studentCode, buyCarId);
     }
 
+    /**
+     * 从购物主页保存订单
+     * @param bookId
+     * @param request
+     * @return
+     */
     @PostMapping("/u/save/order/{bookId}")
     public Result buyBook(@PathVariable("bookId") int bookId,
                           HttpServletRequest request) {
@@ -76,6 +100,12 @@ public class UserController {
         return userService.saveBookOrder(userOrder);
     }
 
+    /**
+     * 从购物主页买东西
+     * @param bookId
+     * @param request
+     * @return
+     */
     @PostMapping("/u/buy/book/{bookId}")
     public Result buyBookFromBookPage(@PathVariable("bookId") int bookId,
                                       HttpServletRequest request) {
@@ -85,6 +115,12 @@ public class UserController {
         return userService.buyBookFromPage(userOrder);
     }
 
+    /**
+     * 查看我的订单
+     * @param page
+     * @param request
+     * @return
+     */
     @GetMapping("/u/search/order/{page}")
     public Result searchOrder(@PathVariable("page") int page,
                               HttpServletRequest request) {
@@ -92,11 +128,22 @@ public class UserController {
         return userService.selectOrder(studentCode, page);
     }
 
+    /**
+     * 从订单页支付
+     * @param orderId
+     * @return
+     */
     @PostMapping("/u/pay/{orderId}")
     public Result payFromOrderPage(@PathVariable("orderId") int orderId) {
         return userService.payOrder(orderId);
     }
 
+    /**
+     * 取消一个待支付的订单
+     * @param orderId
+     * @param request
+     * @return
+     */
     @PostMapping("/u/cancel/{orderId}")
     public Result cancelOrder(@PathVariable("orderId") int orderId,
                               HttpServletRequest request) {
@@ -104,10 +151,23 @@ public class UserController {
         return userService.cancelOrder(orderId, studentCode);
     }
 
+    /**
+     * 从购物车支付
+     * @param buyCarIds
+     * @param request
+     * @return
+     */
     @PostMapping("/u/pay/buyCar")
     public Result payBuyCar(@RequestBody List<Integer> buyCarIds,
                             HttpServletRequest request) {
         String studentCode = (String) request.getAttribute("studentCode");
         return userService.payBuyCar(buyCarIds, studentCode);
+    }
+
+    @GetMapping("/u/search/sell/{page}")
+    public Result getSellBook(@PathVariable("page") int page,
+                              HttpServletRequest request) {
+        String studentCode = (String) request.getAttribute("studentCode");
+        return userService.getSell(studentCode, page);
     }
 }

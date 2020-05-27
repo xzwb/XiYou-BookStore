@@ -39,6 +39,23 @@
         </association>
     </resultMap>
 
+    <resultMap id="UserSell" type="userSell">
+        <id property="orderId" column="orderId"/>
+        <result property="sellTime" column="buyDate"/>
+        <result property="buyer" column="buyer"/>
+        <association property="book" javaType="cc.xzwb.bookstore.pojo.Book">
+            <result column="bookId" property="bookId"/>
+            <result column="studentCode" property="studentCode"/>
+            <result column="bookName" property="bookName"/>
+            <result column="bookStyle" property="bookStyle" typeHandler="cc.xzwb.bookstore.typeHandler.MyTypeHandler"/>
+            <result column="bookIntroduction" property="bookIntroduction"/>
+            <result column="bookSrc" property="bookSrc"/>
+            <result column="userName" property="userName"/>
+            <result column="bookDate" property="bookDate"/>
+            <result column="price" property="price"/>
+        </association>
+    </resultMap>
+
     <select id="selectUser" resultType="person">
         select *from user where userName = #{userInformation} or studentCode = #{userInformation} limit #{page}, 7;
     </select>
@@ -106,5 +123,24 @@
 
     <select id="getBookIdByBuyCarId" resultType="int">
         select bookId from buyCar where buyCarId = #{buyCarId};
+    </select>
+
+    <select id="getSellTotal" resultType="int">
+        select count(*)
+        from book
+        left join userOrder
+        on book.bookId = userOrder.bookId
+        where book.studentCode = #{studentCode} and userOrder.orderStatus = 2;
+    </select>
+
+    <select id="getUserSell" resultMap="UserSell">
+        select user.userName, book.*, userOrder.orderId, userOrder.buyDate, userOrder.studentCode buyer from book
+        left join userOrder
+        on book.bookId = userOrder.bookId
+        left join user
+        on book.studentCode = user.studentCode
+        where book.studentCode = #{studentCode} and userOrder.orderStatus = 2
+        order by userOrder.orderId desc
+        limit #{page}, 7;
     </select>
 </mapper>

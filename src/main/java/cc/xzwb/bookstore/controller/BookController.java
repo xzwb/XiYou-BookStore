@@ -75,6 +75,12 @@ public class BookController {
         return bookService.getUserBook(studentCode, page);
     }
 
+    /**
+     * 用户删除自己发布的书籍
+     * @param bookId
+     * @param request
+     * @return
+     */
     @PostMapping("/u/delete/book/{bookId}")
     public Result deleteBook(@PathVariable("bookId") int bookId,
                              HttpServletRequest request) {

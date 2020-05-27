@@ -4,6 +4,7 @@ import cc.xzwb.bookstore.mapper.BookMapper;
 import cc.xzwb.bookstore.mapper.UserMapper;
 import cc.xzwb.bookstore.pojo.*;
 import cc.xzwb.bookstore.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -142,4 +144,13 @@ public class UserServiceImpl implements UserService {
         userMapper.insertBookOrder(userOrder);
     }
 
+    @Override
+    public Result getSell(String studentCode, int page) {
+        page = (page - 1) * 7;
+        Map<String, Integer> map = new HashMap<>();
+        map.put("total", userMapper.getSellTotal(studentCode));
+        List<UserSell> list = new ArrayList<>();
+        list = userMapper.getUserSell(studentCode, page);
+        return Result.build(ResultStatusEnum.SUCCESS, list, map);
+    }
 }
