@@ -14,6 +14,7 @@ import cc.xzwb.bookstore.zfjw.service.impl.LoginServiceImpl;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -34,16 +35,55 @@ public class RegisterServiceImpl implements RegisterService {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private final int AppID = 1400341372;
-
-    private final String AppKey = "4f64c973f40e450534016ce13709dac0";
-
-    private final int TemplateId = 565992;
-
-    private final String SmsSign = "大小胖几的日常";
+    /**
+     * 队列模板
+     */
+    @Autowired
+    RabbitTemplate rabbitTemplate;
+//
+//    private final int AppID = 1400341372;
+//
+//    private final String AppKey = "4f64c973f40e450534016ce13709dac0";
+//
+//    private final int TemplateId = 565992;
+//
+//    private final String SmsSign = "大小胖几的日常";
 
     /**
-     * 发送短信验证码
+     * 发送短信验证码 不使用延时队列
+     * @param phoneNumber 用户手机号
+     * @return
+     * @throws HTTPException
+     * @throws IOException
+     */
+//    @Override
+//    public Result getSMSCode(String phoneNumber) throws HTTPException, IOException {
+//        String smsCode = "";
+//        Random random = new Random();
+//        for (int i = 0; i < 6; i++) {
+//            smsCode += random.nextInt(10);
+//        }
+//        // 短信中的变量
+//        String[] params = {smsCode, "5"};
+//        SmsSingleSender sender = new SmsSingleSender(AppID, AppKey);
+//        SmsSingleSenderResult result = sender.sendWithParam("86",
+//                phoneNumber, TemplateId, params, SmsSign, "", "");
+//        if (result.result == 0) {
+//            /**
+//             * 如果短信发送成功把得到的短信验证码存到redis中
+//             * 并设置6分钟过期
+//             */
+//            redisTemplate.opsForValue().set(phoneNumber, smsCode, 360, TimeUnit.SECONDS);
+//            return Result.build(ResultStatusEnum.SUCCESS);
+//        } else {
+//            return Result.build(ResultStatusEnum.SMS_CODE_FALSE);
+//        }
+
+//    }
+
+
+    /**
+     * 使用延时队列
      * @param phoneNumber 用户手机号
      * @return
      * @throws HTTPException
@@ -51,26 +91,8 @@ public class RegisterServiceImpl implements RegisterService {
      */
     @Override
     public Result getSMSCode(String phoneNumber) throws HTTPException, IOException {
-        String smsCode = "";
-        Random random = new Random();
-        for (int i = 0; i < 6; i++) {
-            smsCode += random.nextInt(10);
-        }
-        // 短信中的变量
-        String[] params = {smsCode, "5"};
-        SmsSingleSender sender = new SmsSingleSender(AppID, AppKey);
-        SmsSingleSenderResult result = sender.sendWithParam("86",
-                phoneNumber, TemplateId, params, SmsSign, "", "");
-        if (result.result == 0) {
-            /**
-             * 如果短信发送成功把得到的短信验证码存到redis中
-             * 并设置6分钟过期
-             */
-            redisTemplate.opsForValue().set(phoneNumber, smsCode, 360, TimeUnit.SECONDS);
-            return Result.build(ResultStatusEnum.SUCCESS);
-        } else {
-            return Result.build(ResultStatusEnum.SMS_CODE_FALSE);
-        }
+        rabbitTemplate.convertAndSend("exchange_sms_yyf", "sms", phoneNumber);
+        return Result.build(ResultStatusEnum.SUCCESS);
     }
 
     /**

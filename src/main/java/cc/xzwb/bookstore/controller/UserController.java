@@ -164,6 +164,12 @@ public class UserController {
         return userService.payBuyCar(buyCarIds, studentCode);
     }
 
+    /**
+     * 查看自己卖出的书籍
+     * @param page
+     * @param request
+     * @return
+     */
     @GetMapping("/u/search/sell/{page}")
     public Result getSellBook(@PathVariable("page") int page,
                               HttpServletRequest request) {
