@@ -114,4 +114,12 @@ public interface UserMapper {
      */
     List<UserSell> getUserSell(@Param("studentCode") String studentCode,
                                @Param("page") int page);
+
+
+    /**
+     * 根据orderId获取bookId
+     * @param orderId
+     * @return
+     */
+    int selectBookIdByOrderId(@Param("orderId") int orderId);
 }

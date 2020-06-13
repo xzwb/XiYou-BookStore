@@ -96,7 +96,8 @@ public class UserController {
                           HttpServletRequest request) {
         Date buyDate = new Date();
         String studentCode = (String) request.getAttribute("studentCode");
-        UserOrder userOrder = UserOrder.build(studentCode, bookId, buyDate, OrderStatus.WAIT_PAY);
+        Date orderEndTime = new Date(buyDate.getTime() + 15*1000*60);
+        UserOrder userOrder = UserOrder.build(studentCode, bookId, buyDate, OrderStatus.WAIT_PAY, orderEndTime);
         return userService.saveBookOrder(userOrder);
     }
 
@@ -111,7 +112,8 @@ public class UserController {
                                       HttpServletRequest request) {
         Date buyDate = new Date();
         String studentCode = (String) request.getAttribute("studentCode");
-        UserOrder userOrder = UserOrder.build(studentCode, bookId, buyDate, OrderStatus.SUCCESS_PAY);
+//        Date orderEndTime = new Date(buyDate.getTime() + 15*1000*60);
+        UserOrder userOrder = UserOrder.build(studentCode, bookId, buyDate, OrderStatus.SUCCESS_PAY, null);
         return userService.buyBookFromPage(userOrder);
     }
 

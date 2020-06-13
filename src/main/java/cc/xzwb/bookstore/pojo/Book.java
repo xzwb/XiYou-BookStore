@@ -35,4 +35,7 @@ public class Book {
     // 书的价格
     @NotNull
     private float price;
+    // 库存
+    @NotNull
+    private int stock;
 }

@@ -10,6 +10,7 @@
         <association property="book" javaType="cc.xzwb.bookstore.pojo.Book">
             <id column="bookId" property="bookId"/>
             <result column="studentCode" property="studentCode"/>
+            <result column="stock" property="stock"/>
             <result column="bookName" property="bookName"/>
             <result column="bookStyle" property="bookStyle" typeHandler="cc.xzwb.bookstore.typeHandler.MyTypeHandler"/>
             <result column="bookIntroduction" property="bookIntroduction"/>
@@ -30,6 +31,7 @@
             <id column="bookId" property="bookId"/>
             <result column="studentCode" property="studentCode"/>
             <result column="bookName" property="bookName"/>
+            <result column="stock" property="stock"/>
             <result column="bookStyle" property="bookStyle" typeHandler="cc.xzwb.bookstore.typeHandler.MyTypeHandler"/>
             <result column="bookIntroduction" property="bookIntroduction"/>
             <result column="bookSrc" property="bookSrc"/>
@@ -46,6 +48,7 @@
         <association property="book" javaType="cc.xzwb.bookstore.pojo.Book">
             <result column="bookId" property="bookId"/>
             <result column="studentCode" property="studentCode"/>
+            <result column="stock" property="stock"/>
             <result column="bookName" property="bookName"/>
             <result column="bookStyle" property="bookStyle" typeHandler="cc.xzwb.bookstore.typeHandler.MyTypeHandler"/>
             <result column="bookIntroduction" property="bookIntroduction"/>
@@ -91,7 +94,7 @@
     <insert id="insertBookOrder" useGeneratedKeys="true" keyProperty="orderId" parameterType="userOrder">
         insert into userOrder values(default, #{studentCode},
         #{bookId}, #{buyDate},
-        #{orderStatus, typeHandler = cc.xzwb.bookstore.typeHandler.OrderEnumTypeHandler});
+        #{orderStatus, typeHandler = cc.xzwb.bookstore.typeHandler.OrderEnumTypeHandler}, #{orderEndTime});
     </insert>
 
     <select id="getOrderByCode" resultMap="order">
@@ -142,5 +145,9 @@
         where book.studentCode = #{studentCode} and userOrder.orderStatus = 2
         order by userOrder.orderId desc
         limit #{page}, 7;
+    </select>
+
+    <select id="selectBookIdByOrderId" resultType="int">
+        select bookId from userOrder where orderId = #{orderId};
     </select>
 </mapper>

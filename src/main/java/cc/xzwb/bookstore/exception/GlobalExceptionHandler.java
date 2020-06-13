@@ -53,6 +53,9 @@ public class GlobalExceptionHandler {
           /* 没有token */
         } else if (e instanceof LoginTokenException) {
             return Result.build(ResultStatusEnum.TOKEN_FALSE);
+        /* 购物车订单中有没货的 */
+        } else if (e instanceof BuyCarException) {
+            return Result.build(ResultStatusEnum.NOT_HAVE_STOCK);
         }
         e.printStackTrace();
         return Result.build(ResultStatusEnum.EXCEPTION);

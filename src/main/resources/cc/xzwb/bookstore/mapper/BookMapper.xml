@@ -8,6 +8,7 @@
         <id property="bookId" column="bookId"/>
         <result property="userName" column="userName"/>
         <result property="studentCode" column="studentCode"/>
+        <result property="stock" column="stock"/>
         <result property="bookName" column="bookName"/>
         <result property="bookStyle" column="bookStyle" typeHandler="cc.xzwb.bookstore.typeHandler.MyTypeHandler"/>
         <result property="bookIntroduction" column="bookIntroduction"/>
@@ -20,7 +21,7 @@
         insert into book values
         (default, #{studentCode}, #{bookName},
         #{bookStyle, typeHandler = cc.xzwb.bookstore.typeHandler.MyTypeHandler},
-        #{bookIntroduction}, #{bookSrc}, #{bookDate}, #{price});
+        #{bookIntroduction}, #{bookSrc}, #{bookDate}, #{price}, #{stock});
     </insert>
 
     <select id="selectBookByBookId" resultMap="getBookByBookId">
@@ -70,7 +71,7 @@
     </select>
 
     <select id="getUserBook" resultMap="getBookByBookId">
-        select *from book where studentCode = #{studentCode} limit #{page}, 7;
+        select book.*, userName from book left join user on book.studentCode = user.studentCode where book.studentCode = #{studentCode} limit #{page}, 7;
     </select>
 
     <select id="getUserBookTotal" resultType="int">
@@ -80,4 +81,24 @@
     <delete id="deleteBook">
         delete from book where bookId = #{bookId} and studentCode = #{studentCode};
     </delete>
+
+    <select id="selectInvalidOrder" resultType="int">
+        select bookId from userOrder where orderStatus = #{status, typeHandler = cc.xzwb.bookstore.typeHandler.OrderEnumTypeHandler} and orderEndTime &lt; #{time};
+    </select>
+
+    <update id="orderJobMapper">
+        update userOrder set orderStatus = #{newStatus, typeHandler = cc.xzwb.bookstore.typeHandler.OrderEnumTypeHandler} where orderStatus = #{oldStatus, typeHandler = cc.xzwb.bookstore.typeHandler.OrderEnumTypeHandler} and orderEndTime &lt; #{time};
+    </update>
+
+    <update id="addStock">
+        update book set stock = stock + 1 where bookId = #{bookId};
+    </update>
+
+    <update id="supStock">
+        update book set stock = stock - 1 where bookId = #{bookId};
+    </update>
+
+    <select id="selectStock" resultType="int">
+        select stock from book where bookId = #{bookId};
+    </select>
 </mapper>

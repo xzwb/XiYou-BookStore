@@ -1,6 +1,7 @@
 package cc.xzwb.bookstore.mapper;
 
 import cc.xzwb.bookstore.pojo.Book;
+import cc.xzwb.bookstore.pojo.OrderStatus;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -61,4 +62,32 @@ public interface BookMapper {
 
     void deleteBook(@Param("studentCode") String studentCode,
                     @Param("bookId") int bookId);
+
+    /**
+     * 取消过期订单
+     */
+    void orderJobMapper(@Param("time") String time,
+                        @Param("oldStatus") OrderStatus oldStatus,
+                        @Param("newStatus") OrderStatus newStatus);
+
+    /**
+     * 找到要取消的订单
+     */
+    List<Integer> selectInvalidOrder(@Param("time") String time,
+                                     @Param("status") OrderStatus status);
+
+    /**
+     * 增加库存
+     */
+    void addStock(@Param("bookId") int bookId);
+
+    /**
+     * 减少库存
+     */
+    void supStock(@Param("bookId") int bookId);
+
+    /**
+     * 查看库存
+     */
+    int selectStock(@Param("bookId") int bookId);
 }

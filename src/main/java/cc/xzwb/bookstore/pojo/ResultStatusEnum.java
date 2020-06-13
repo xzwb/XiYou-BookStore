@@ -57,6 +57,11 @@ public enum ResultStatusEnum {
     LOGIN_FALSE(-6, "用户名或者密码错误"),
 
     /**
+     * 该商品没货了
+     */
+    NOT_HAVE_STOCK(-7, "没货了"),
+
+    /**
      * 请求错误
      */
     BIND_EXCEPTION(400);
