@@ -4,6 +4,9 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * 正方教务系统的config
+ */
 @Configuration
 public class ZFJWConfig {
 

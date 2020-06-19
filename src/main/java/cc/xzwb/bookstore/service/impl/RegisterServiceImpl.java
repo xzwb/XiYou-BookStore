@@ -11,8 +11,6 @@ import cc.xzwb.bookstore.zfjw.model.LoginStatus;
 import cc.xzwb.bookstore.zfjw.model.User;
 import cc.xzwb.bookstore.zfjw.service.LoginService;
 import cc.xzwb.bookstore.zfjw.service.impl.LoginServiceImpl;
-import com.github.qcloudsms.SmsSingleSender;
-import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +21,6 @@ import org.springframework.util.DigestUtils;
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.Part;
 import java.io.IOException;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class RegisterServiceImpl implements RegisterService {
@@ -102,24 +98,22 @@ public class RegisterServiceImpl implements RegisterService {
      * @param studentPassword 学生教务系统密码
      * @param src 图片路径
      * @param part Part
-     * @param haveSrc 是否含有图片
      * @return
      * @throws LoginException
      * @throws PublicKeyException
      * @throws cc.xzwb.bookstore.zfjw.exception.LoginException
      */
     @Override
-    public Result register(Person person, String smsCode, String studentPassword, String src, Part part, boolean haveSrc) throws LoginException, PublicKeyException, cc.xzwb.bookstore.zfjw.exception.LoginException {
+    public Result register(Person person, String smsCode, String studentPassword, String src, Part part) throws LoginException, PublicKeyException, cc.xzwb.bookstore.zfjw.exception.LoginException {
         // 用户密码使用md5加密后保存到数据库
         person.setPassword(DigestUtils.md5DigestAsHex(person.getPassword().getBytes()));
         if (smsCodeService(person.getPhoneNumber(), smsCode)) {
             if (ZFJWService(person.getStudentCode(), studentPassword)) {
                 registerMapper.insertPerson(person);
                 // 使用异步保存头像文件
-                if (haveSrc) {
-                    System.out.println(src);
-                    new SaveFileThread(part, src).run();
-                }
+                System.out.println(src);
+                new SaveFileThread(part, src).run();
+
                 return Result.build(ResultStatusEnum.SUCCESS);
             } else {
                 return Result.build(ResultStatusEnum.ZFJW_FALSE);

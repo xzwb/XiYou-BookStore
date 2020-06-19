@@ -5,8 +5,8 @@ import cc.xzwb.bookstore.pojo.Book;
 import cc.xzwb.bookstore.pojo.Result;
 import cc.xzwb.bookstore.pojo.ResultStatusEnum;
 import cc.xzwb.bookstore.service.BookService;
-import cc.xzwb.bookstore.thread.DeleteFileThread;
 import cc.xzwb.bookstore.thread.SaveFileThread;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -23,6 +23,9 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     BookMapper bookMapper;
+
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
     @Override
     public Result release(Book book, String fileURI, Part part) {
@@ -86,7 +89,7 @@ public class BookServiceImpl implements BookService {
         if (book != null) {
             if (book.getStudentCode().equals(studentCode)) {
                 src += book.getBookSrc();
-                new DeleteFileThread(src).run();
+                rabbitTemplate.convertAndSend("exchange_delFile_yyf", "del", src);
             }
         }
         bookMapper.deleteBook(studentCode, bookId);

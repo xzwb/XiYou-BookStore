@@ -26,6 +26,7 @@ public class QuartzConfig {
     public SimpleTriggerFactoryBean simpleTriggerFactoryBean() {
         SimpleTriggerFactoryBean simpleTriggerFactoryBean = new SimpleTriggerFactoryBean();
         simpleTriggerFactoryBean.setJobDetail(jobDetailFactoryBean().getObject());
+        // 每60秒执行一次
         simpleTriggerFactoryBean.setRepeatInterval(60*1000);
         return simpleTriggerFactoryBean;
     }
